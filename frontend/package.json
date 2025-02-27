@@ -10,6 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+<<<<<<< HEAD
+=======
+    "frontend": "file:",
+>>>>>>> 9535fd3 (Set up back-end foundation, set up routes (login, logout, auth, updateProfilePicture))
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
