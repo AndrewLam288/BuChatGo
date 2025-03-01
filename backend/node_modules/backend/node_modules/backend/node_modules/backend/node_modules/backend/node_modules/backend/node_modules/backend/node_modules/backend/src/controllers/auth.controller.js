@@ -99,23 +99,25 @@ export const logout = (req, res) => {
 
 export const updateProfile = async (req, res) => {
     try {
-        const {profilePicture} = req.body;
-        const userId = req.user._id
+        const { profilePic } = req.body; // Ensure this matches the frontend
+        const userId = req.user._id;
 
-        if(!profilePicture) {
-            return res.status(400).json({message: "Must upload profile picture"});
+        if (!profilePic) {
+            return res.status(400).json({ message: "Must upload profile picture" });
         }
 
-        const uploadResponse = await cloudinary.uploader.upload(profilePicture)
+        const uploadResponse = await cloudinary.uploader.upload(profilePic);
 
-        const updatedUser = await User.findByIdAndUpdate(userId, {profilePicture: uploadResponse.secure_url}, {new: true});
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { profilePic: uploadResponse.secure_url }, // Ensure this matches the User model
+            { new: true }
+        );
 
         res.status(200).json(updatedUser);
-
-        // catch error for debugging, this should be server
     } catch (error) {
         console.log("Error in updateProfile controller", error.message);
-        res.status(500).json({message: "Internal Server Error"});
+        res.status(500).json({ message: "Internal Server Error" });
     }
 };
 
