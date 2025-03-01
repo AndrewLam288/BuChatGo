@@ -95,7 +95,7 @@ export const SignUpPage = () => {
             </div>
 
             {/* Form control for password section in signup page */}
-            <div className="form-control">
+            <div className="form-control mb-4">
               <label className="label">
                 <span className="label-text font-medium">Password</span>
               </label>
