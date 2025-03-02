@@ -1,26 +1,57 @@
-import { useAuthStore } from '../store/useAuthStore';
-import { Camera, User, Mail } from 'lucide-react';
-import { useState } from 'react';
-
+import { useAuthStore } from "../store/useAuthStore";
+import { Camera, User, Mail, X } from "lucide-react";
+import { useState } from "react";
 
 export const ProfilePage = () => {
   const { authUser, isUpdatingProfile, updateProfile } = useAuthStore();
-  const [selectedImg, setSelectedImg] = useState(null);
+  const [selectedImg, setSelectedImg] = useState(authUser.profilePic || "/default1.png");
+  const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal
 
+  // Predefined default images
+  const defaultImages = [
+    "/cat.png", // This should be the default profile pic when account is created
+    "/bear.png",
+    "/cow.png",
+    "/duck.png",
+    "/giraffe.png",
+    "/hen.png",
+    "/koala.png",
+    "/panda.png",
+    "/penguin.png",
+    "/pig.png",
+    "/puffer-fish.png",
+    "/rabbit.png",
+    "/shark.png",
+  ];
+
+  // Handle file upload
   const handleImageUpload = (e) => {
-    const file = e.target.files[0]; // get the image user selected
-    if (!file) return; // no picture file selected exit this function do nothing
+    const file = e.target.files[0];
+    if (!file) return;
 
-    const reader = new FileReader(); // create a new file reader
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
 
-    reader.readAsDataURL(file); // read the file
+    reader.onload = async () => {
+      const base64Image = reader.result;
+      setSelectedImg(base64Image);
+      await updateProfile({ profilePic: base64Image });
+      setIsModalOpen(false); // Close modal after selecting
+    };
+  };
 
-    reader.onload = async() => {
-      const base64Image = reader.result; // convert the image to base64
-      setSelectedImg(base64Image); // set the selected image to the base64 image
-      await updateProfile({ profilePic: base64Image }); // update the profile picture
+  // Select a predefined avatar
+  const handleSelectDefaultImage = async (image) => {
+    const fullImageUrl = `${window.location.origin}${image}`; // Convert to full URL
+
+    try {
+      setSelectedImg(fullImageUrl); // Update frontend instantly
+      await updateProfile({ profilePic: fullImageUrl }); // Send full URL instead of relative path
+      setIsModalOpen(false); // Close modal after selecting
+    } catch (error) {
+      console.error("Error updating profile:", error);
     }
-  }
+  };
 
   return (
     <div className="h-screen pt-20">
@@ -31,42 +62,29 @@ export const ProfilePage = () => {
             <p className="mt-2">Your Private Hideout</p>
           </div>
 
-          {/* uploading avatar section*/}
-
+          {/* Uploading Avatar Section */}
           <div className="flex flex-col items-center gap-4">
             <div className="relative">
               <img
-                src={selectedImg || authUser.profilePic || "/defaultavatar.png"}
+                src={selectedImg}
                 alt="Profile"
-                className="size-32 rounded-full object-cover border-4 "
+                className="size-32 rounded-full object-cover border-4"
               />
-              <label
-                htmlFor="avatar-upload"
-                className={`
-                  absolute bottom-0 right-0 
-                  bg-base-content hover:scale-105
-                  p-2 rounded-full cursor-pointer 
-                  transition-all duration-200
-                  ${isUpdatingProfile ? "animate-pulse pointer-events-none" : ""}
-                `}
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className={`absolute bottom-0 right-0 bg-base-content hover:scale-105
+                  p-2 rounded-full cursor-pointer transition-all duration-200
+                  ${isUpdatingProfile ? "animate-pulse pointer-events-none" : ""}`}
               >
                 <Camera className="w-5 h-5 text-base-200" />
-                <input
-                  type="file"
-                  id="avatar-upload"
-                  className="hidden"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  disabled={isUpdatingProfile}
-                />
-              </label>
+              </button>
             </div>
             <p className="text-sm text-zinc-400">
               {isUpdatingProfile ? "Picture Profile Uploading..." : "Click the camera icon to update your photo"}
             </p>
           </div>
 
-          {/* user info section */}
+          {/* Profile Info Section */}
           <div className="space-y-6">
             <div className="space-y-1.5">
               <div className="text-sm text-zinc-400 flex items-center gap-2">
@@ -85,9 +103,9 @@ export const ProfilePage = () => {
             </div>
           </div>
 
-          {/* account info section */}
+          {/* Account Info Section */}
           <div className="mt-6 bg-base-300 rounded-xl p-6">
-            <h2 className="text-lg font-medium  mb-4">Account Status</h2>
+            <h2 className="text-lg font-medium mb-4">Account Status</h2>
             <div className="space-y-3 text-sm">
               <div className="flex items-center justify-between py-2 border-b border-zinc-700">
                 <span>Joined Since</span>
@@ -99,11 +117,47 @@ export const ProfilePage = () => {
               </div>
             </div>
           </div>
-
         </div>
       </div>
+
+      {/* Modal for Selecting Profile Picture */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg max-w-sm w-full">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">Change Profile Picture</h3>
+              <button onClick={() => setIsModalOpen(false)} className="text-gray-600">
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            {/* Default images selection */}
+            <div className="text-center">
+              <h3 className="text-lg font-medium mb-3">Choose Your Identity</h3>
+              <div className="grid grid-cols-4 gap-3 overflow-y-auto max-h-40 p-2">
+                {defaultImages.map((img, index) => (
+                  <img
+                    key={index}
+                    src={img}
+                    alt={`Default ${index + 1}`}
+                    className={`w-16 h-16 rounded-full cursor-pointer border-2 transition 
+          ${selectedImg === img ? "border-green-500" : "border-transparent"}`}
+                    onClick={() => handleSelectDefaultImage(img)}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* File Upload Option */}
+            <label className="block text-center cursor-pointer bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+              Upload from Device
+              <input type="file" className="hidden" accept="image/*" onChange={handleImageUpload} />
+            </label>
+          </div>
+        </div>
+      )}
     </div>
-  )
+  );
 };
 
 export default ProfilePage;

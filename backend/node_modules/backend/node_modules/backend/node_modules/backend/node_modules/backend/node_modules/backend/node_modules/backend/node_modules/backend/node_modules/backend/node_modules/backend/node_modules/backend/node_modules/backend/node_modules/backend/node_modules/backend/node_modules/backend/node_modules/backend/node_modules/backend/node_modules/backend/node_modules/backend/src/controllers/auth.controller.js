@@ -106,11 +106,25 @@ export const updateProfile = async (req, res) => {
             return res.status(400).json({ message: "Must upload profile picture" });
         }
 
-        const uploadResponse = await cloudinary.uploader.upload(profilePic);
+        let updatedProfilePic;
 
+        // If the image is a Base64-encoded image, upload to Cloudinary
+        if (profilePic.startsWith("data:image")) {
+            const uploadResponse = await cloudinary.uploader.upload(profilePic);
+            updatedProfilePic = uploadResponse.secure_url;
+        } 
+        // If the image is a predefined default image (URL), save it directly
+        else if (profilePic.startsWith("http") || profilePic.startsWith("/")) {
+            updatedProfilePic = profilePic; 
+        } 
+        else {
+            return res.status(400).json({ message: "Invalid image format" });
+        }
+
+        // Update user profile picture in database
         const updatedUser = await User.findByIdAndUpdate(
             userId,
-            { profilePic: uploadResponse.secure_url }, // Ensure this matches the User model
+            { profilePic: updatedProfilePic }, // Ensure this matches the User model
             { new: true }
         );
 
