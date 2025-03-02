@@ -8,13 +8,14 @@ import { ProfilePage } from './pages/ProfilePage';
 import { Routes, Route } from 'react-router-dom';
 import { axiosInstance } from './lib/axios';
 import { useAuthStore } from './store/useAuthStore';
+import { useThemeStore } from './store/useThemeStore';
 import { Loader } from 'lucide-react';
 import { Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 
 export const App = () => {
   const {authUser, checkAuth, isCheckingAuth} = useAuthStore()
-
+  const {theme} = useThemeStore();
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
@@ -30,7 +31,7 @@ export const App = () => {
   
 
   return (
-    <div>
+    <div data-theme={theme}>
       
       <Navbar />
 
