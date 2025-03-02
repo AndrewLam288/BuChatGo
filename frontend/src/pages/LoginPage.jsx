@@ -17,7 +17,7 @@ import AuthImagePattern from '../components/AuthImagePattern';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    login(formData);
+    await login(formData);
   };
 
   return (

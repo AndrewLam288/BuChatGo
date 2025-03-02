@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAuthStore } from "../store/useAuthStore";
+import { Eye, EyeOff, Loader2, Lock, Mail, MessageSquare, User } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Mail, User, EyeOff, Eye, Lock, MessageSquare, Loader2} from "lucide-react";
 
 import AuthImagePattern from "../components/AuthImagePattern";
 import toast from "react-hot-toast";
@@ -17,7 +17,7 @@ export const SignUpPage = () => {
 
   const { signup, isSigningUp } = useAuthStore();
 
-  const validataeForm = () => {
+  const validateForm = () => {
     if (!formData.fullName.trim()) return toast.error("Full name is missing");
     if (!formData.email.trim()) return toast.error("Email is missing");
     if (!/\S+@\S+\.\S+/.test(formData.email)) return toast.error("Invalid email format");
@@ -31,10 +31,10 @@ export const SignUpPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const success = validataeForm();
+    const success = validateForm();
 
-    if(success===true) signup(formData);
-  }
+    if (success === true) signup(formData);
+  };
 
   return (
     <div className="min-h-screen grid lg:grid-cols-2">
@@ -135,7 +135,7 @@ export const SignUpPage = () => {
                   Loading...
                 </>
               ) : (
-                "Sign Up"
+                "Create Account"
               )}
             </button>
           </form>
@@ -153,9 +153,9 @@ export const SignUpPage = () => {
         </div>
       </div>
 
-        {/* Right Side */}
+      {/* Right Side */}
 
-        <AuthImagePattern
+      <AuthImagePattern
         title="Join our community"
         subtitle="Connect with friends, share moments, and stay in touch with your loved ones."
       />
