@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useAuthStore } from '../store/useAuthStore';
-import { MessageSquare, Mail, Lock, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 import AuthImagePattern from '../components/AuthImagePattern';
 
-  export const LoginPage = () => {
+export const LoginPage = () => {
 
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -34,7 +34,7 @@ import AuthImagePattern from '../components/AuthImagePattern';
                 className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20
               transition-colors"
               >
-                <MessageSquare className="w-6 h-6 text-primary" />
+                <img src="/speak.png" alt="BuChatGo" className="w-6 h-6" />
               </div>
               <h1 className="text-2xl font-bold mt-2">Welcome Back</h1>
               <p className="text-base-content/60">Ready to hop back on where you left last time?</p>

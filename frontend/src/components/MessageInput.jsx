@@ -36,7 +36,14 @@ const MessageInput = () => {
     if (!text.trim() && !imagePreview) return;
 
     try {
-      await sendMessage({ text: text.trim(), image: imagePreview });
+      // If both image and text exist, send them as separate messages
+      if (imagePreview) {
+        await sendMessage({ text: "", image: imagePreview }); // Send image first
+      }
+
+      if (text.trim()) {
+        await sendMessage({ text: text.trim(), image: "" }); // Send text separately
+      }
 
       // Reset input & show Image button again
       setText("");
@@ -71,7 +78,7 @@ const MessageInput = () => {
       )}
 
       <form onSubmit={handleSendMessage} className="flex items-center gap-2 relative">
-        {/* Image Upload Button (Smooth Slide-Out to the Left) */}
+        {/* Image Upload Button with Smooth Slide-Out Effect */}
         <div
           className={`transition-all duration-300 transform ${
             hideImageButton ? "-translate-x-14 opacity-0" : "translate-x-0 opacity-100"
