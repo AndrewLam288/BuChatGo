@@ -4,7 +4,7 @@ import { useState } from "react";
 
 export const ProfilePage = () => {
   const { authUser, isUpdatingProfile, updateProfile } = useAuthStore();
-  const [selectedImg, setSelectedImg] = useState(authUser.profilePic || "/default1.png");
+  const [selectedImg, setSelectedImg] = useState(authUser.profilePic || "/cat.png");
   const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal
 
   // Predefined default images
